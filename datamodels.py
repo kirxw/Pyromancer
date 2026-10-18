@@ -59,8 +59,9 @@ class NetworkBatch(BaseModel):
 
 class GuildData(TypedDict):
     _id: int
-    ServerThreadChannel: int
+    ManagedPlaces: list[dict[int, str]]
     PermissionRoles: list[int]
+    SharedSecret: str
 
 
 class ServerData(TypedDict):
@@ -68,3 +69,4 @@ class ServerData(TypedDict):
     ThreadId: int
     GuildId: int
     ConnectedUsers: dict[str, int]
+    PlaceId: int
