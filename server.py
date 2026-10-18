@@ -24,4 +24,4 @@ app = FastAPI(lifespan=lifespan)
 
 @app.post("/post_network_batch/")
 async def handle_api_invoke(data: NetworkBatch):
-    pass
+    await bot.handle_network_batch(data)

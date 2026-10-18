@@ -7,6 +7,7 @@ from discord.ext import commands
 
 from config import CONFIG
 from modules.event import Event
+from datamodels import NetworkBatch
 
 class Bot(commands.Bot):
     on_user_message: Event
@@ -30,6 +31,16 @@ class Bot(commands.Bot):
         self.on_user_command = Event()
         self.on_user_message = Event()
         self.ON_SETUP_FINISHED = asyncio.Event()
+
+    async def handle_network_batch(self, data: NetworkBatch):
+        for message in data.operations:
+            await self.on_operation.invoke(message)
+        for message in data.server_messages:
+            await self.on_server_message.invoke(message)
+        for message in data.user_commands:
+            await self.on_user_command.invoke(message)
+        for message in data.user_messages:
+            await self.on_user_message.invoke(message)
 
     async def setup_hook(self):
         for filename in os.listdir(CONFIG.COGS_DIRECTORY):
