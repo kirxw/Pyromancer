@@ -32,7 +32,9 @@ class Bot(commands.Bot):
         self.on_server_message = Event()
         self.on_user_command = Event()
         self.on_user_message = Event()
-        self.ON_SETUP_FINISHED = asyncio.Event()
+        self.ON_SETUP_FINISHED = (
+            asyncio.Event()
+        )  # use asyncio's event because it can be set and stay set
 
     async def handle_network_batch(self, data: NetworkBatch):
         for message in data.operations:
@@ -57,4 +59,10 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")
+
+        for cog_name, cog in self.cogs.items():
+            if isinstance(cog, AsyncCog):
+                print(f"Blocking for cog {cog_name}")
+                await cog.ready_hook()
+
         self.ON_SETUP_FINISHED.set()
