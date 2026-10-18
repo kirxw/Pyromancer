@@ -46,7 +46,8 @@ class ServerMessage(Message):
 
 
 class Operation(Message):
-    pass
+    OperationName: str
+    OperationBody: str
 
 
 class NetworkBatch(BaseModel):
@@ -66,3 +67,4 @@ class ServerData(TypedDict):
     _id: int
     ThreadId: int
     GuildId: int
+    ConnectedUsers: dict[str, int]
