@@ -6,8 +6,14 @@ import discord
 from discord.ext import commands
 
 from config import CONFIG
+from modules.event import Event
 
 class Bot(commands.Bot):
+    on_user_message: Event
+    on_server_message: Event
+    on_user_command: Event
+    on_operation: Event
+
     def __init__(self):
         super().__init__(
             command_prefix="$",
@@ -19,6 +25,10 @@ class Bot(commands.Bot):
             ),
         )
 
+        self.on_operation = Event()
+        self.on_server_message = Event()
+        self.on_user_command = Event()
+        self.on_user_message = Event()
         self.ON_SETUP_FINISHED = asyncio.Event()
 
     async def setup_hook(self):
