@@ -1,8 +1,6 @@
-import os
-from dotenv import load_dotenv
-from bot import Bot
+import uvicorn
 
-load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+from config import CONFIG
 
-Bot(BOT_TOKEN)
+if __name__ == "__main__":
+    uvicorn.run("server:app",host=CONFIG.HOST,port=CONFIG.PORT)
