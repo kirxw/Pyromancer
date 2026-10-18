@@ -1,13 +1,15 @@
-import os
 import asyncio
+import os
 
 import discord
-#from discord import app_commands
+
+# from discord import app_commands
 from discord.ext import commands
 
 from config import CONFIG
-from modules.event import Event
 from datamodels import NetworkBatch
+from modules.event import Event
+
 
 class Bot(commands.Bot):
     on_user_message: Event
@@ -21,8 +23,7 @@ class Bot(commands.Bot):
             intents=CONFIG.INTENTS,
             status=CONFIG.STATUS_TYPE,
             activity=discord.Activity(
-                type=CONFIG.ACTIVITY_TYPE,
-                name=CONFIG.ACTIVITY_NAME
+                type=CONFIG.ACTIVITY_TYPE, name=CONFIG.ACTIVITY_NAME
             ),
         )
 

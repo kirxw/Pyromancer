@@ -1,8 +1,8 @@
-from typing import TypedDict
-from pydantic import BaseModel,ConfigDict
-from typing import Literal
+from typing import Literal, TypedDict
 
 import discord
+from pydantic import BaseModel, ConfigDict
+
 
 class BotConfig(BaseModel):
     model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
@@ -18,9 +18,10 @@ class BotConfig(BaseModel):
     MONGO_DB_NAME: str
     GUILD_COLLECTION_NAME: str
 
+
 class Message(BaseModel):
     JobId: str
-    ServerType: Literal["Public","Private","Reserved","Studio"]
+    ServerType: Literal["Public", "Private", "Reserved", "Studio"]
     PlaceId: int
     Timestamp: int
 
@@ -31,6 +32,7 @@ class UserMessage(Message):
     DisplayName: str
     Content: str
 
+
 class UserCommand(Message):
     UserId: int
     Name: str
@@ -38,11 +40,14 @@ class UserCommand(Message):
     CommandName: str
     CommandBody: str
 
+
 class ServerMessage(Message):
     Content: str
 
+
 class Operation(Message):
     pass
+
 
 class NetworkBatch(BaseModel):
     user_messages: list[UserMessage]
@@ -50,8 +55,14 @@ class NetworkBatch(BaseModel):
     server_messages: list[ServerMessage]
     operations: list[Operation]
 
-class GuildData(TypedDict):
-    GuildId: int
 
+class GuildData(TypedDict):
+    _id: int
     ServerThreadChannel: int
-    ActiveThreads: dict[str,int]
+    PermissionRoles: list[int]
+
+
+class ServerData(TypedDict):
+    _id: int
+    ThreadId: int
+    GuildId: int

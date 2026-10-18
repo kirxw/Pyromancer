@@ -1,9 +1,11 @@
 import asyncio
 import inspect
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
+
 
 class Event:
-    listeners: list[Callable[...,Any]]
+    listeners: list[Callable[..., Any]]
     name: str | None
     buffer: list[Any]
 
@@ -12,16 +14,16 @@ class Event:
         self.listeners = []
         self.buffer = []
 
-    def bind(self, f: Callable[...,Any]):
+    def bind(self, f: Callable[..., Any]):
         assert f not in self.listeners, "Attempt to bind already bound function"
         self.listeners.append(f)
 
         if len(self.buffer) > 0:
             while len(self.buffer) > 0:
                 bufferobj = self.buffer.pop(0)
-                self.invoke(*bufferobj["args"],**bufferobj["kwargs"])
+                self.invoke(*bufferobj["args"], **bufferobj["kwargs"])
 
-    def unbind(self, f: Callable[...,Any]):
+    def unbind(self, f: Callable[..., Any]):
         assert f in self.listeners, "Function was not bound"
         self.listeners.remove(f)
 
@@ -34,7 +36,7 @@ class Event:
             return
 
         loop = asyncio.get_running_loop()
-        loop.create_task(self.invoke_blocking(*args,**kwargs))
+        loop.create_task(self.invoke_blocking(*args, **kwargs))
 
     async def invoke_blocking(self, *args: Any, **kwargs: Any):
         if len(self.listeners) == 0:
@@ -43,9 +45,9 @@ class Event:
             bufferobj["kwargs"] = kwargs
             self.buffer.append(bufferobj)
             return
-        
+
         for listener in self.listeners:
             if inspect.iscoroutinefunction(listener):
-                await listener(*args,**kwargs)
+                await listener(*args, **kwargs)
             else:
-                listener(*args,**kwargs)
+                listener(*args, **kwargs)
