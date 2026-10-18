@@ -12,3 +12,19 @@ class BotConfig(BaseModel):
     STATUS_TYPE: discord.Status
     ACTIVITY_TYPE: discord.ActivityType
     ACTIVITY_NAME: str
+
+class UserMessage(BaseModel):
+    UserId: int
+    Name: str
+    DisplayName: str
+
+class UserCommand(BaseModel):
+    pass
+
+class ServerMessage(BaseModel):
+    pass
+
+class NetworkBatch(BaseModel):
+    user_messages: list[UserMessage]
+    user_commans = list[UserCommand]
+    server_messages: list[ServerMessage]

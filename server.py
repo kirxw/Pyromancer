@@ -1,10 +1,12 @@
 import os
 import asyncio
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI#, HTTPException
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
-from config import CONFIG
+from datamodels import NetworkBatch
+
+#from config import CONFIG
 from bot import Bot
 
 load_dotenv()
@@ -20,6 +22,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/invoke_bot")
-async def handle_api_invoke(data):
+@app.post("/post_network_batch/")
+async def handle_api_invoke(data: NetworkBatch):
     pass
