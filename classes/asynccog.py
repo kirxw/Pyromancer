@@ -9,3 +9,6 @@ class AsyncCog(commands.Cog):
 
     async def ready_hook(self):
         pass
+
+    async def on_running(self):
+        pass

@@ -54,7 +54,7 @@ class Bot(commands.Bot):
 
         for cog_name, cog in self.cogs.items():
             if isinstance(cog, AsyncCog):
-                print(f"Blocking for cog {cog_name}")
+                print(f"Blocking for setup hook in cog {cog_name}")
                 await cog.setup_hook()
 
     async def on_ready(self):
@@ -62,7 +62,12 @@ class Bot(commands.Bot):
 
         for cog_name, cog in self.cogs.items():
             if isinstance(cog, AsyncCog):
-                print(f"Blocking for cog {cog_name}")
+                print(f"Blocking for ready hook in cog {cog_name}")
                 await cog.ready_hook()
 
         self.ON_SETUP_FINISHED.set()
+
+        for cog_name, cog in self.cogs.items():
+            if isinstance(cog, AsyncCog):
+                print(f"Asynchronously running {cog_name}")
+                asyncio.create_task(cog.on_running())
