@@ -1,3 +1,5 @@
+import discord
+from discord.ext import commands
 from pymongo import AsyncMongoClient
 
 from bot import Bot
@@ -18,7 +20,8 @@ class GuildHandler(AsyncCog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    async def setup_hook(self):
+    @commands.Cog.listener()
+    async def on_guild_available(self, guild: discord.Guild):
         pass
 
 
