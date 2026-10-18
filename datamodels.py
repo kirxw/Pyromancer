@@ -1,3 +1,4 @@
+from typing import TypedDict
 from pydantic import BaseModel,ConfigDict
 from typing import Literal
 
@@ -13,6 +14,9 @@ class BotConfig(BaseModel):
     STATUS_TYPE: discord.Status
     ACTIVITY_TYPE: discord.ActivityType
     ACTIVITY_NAME: str
+    MONGO_URL: str
+    MONGO_DB_NAME: str
+    GUILD_COLLECTION_NAME: str
 
 class Message(BaseModel):
     JobId: str
@@ -45,3 +49,9 @@ class NetworkBatch(BaseModel):
     user_commands: list[UserCommand]
     server_messages: list[ServerMessage]
     operations: list[Operation]
+
+class GuildData(TypedDict):
+    GuildId: int
+
+    ServerThreadChannel: int
+    ActiveThreads: dict[str,int]
