@@ -57,13 +57,15 @@ class NetworkBatch(BaseModel):
     operations: list[Operation]
 
 
+# SAVED GUILD DATA, NOT GUILD DATA OBJECT
 class GuildData(TypedDict):
     _id: int
     ManagedPlaces: list[dict[int, str]]
     PermissionRoles: list[int]
-    SharedSecret: str
+    SharedSecret: str | None
 
 
+# SAVED SERVER DATA, NOT SERVER DATA OBJECT
 class ServerData(TypedDict):
     _id: int
     ThreadId: int
