@@ -34,13 +34,13 @@ class Bot(commands.Bot):
 
     async def handle_network_batch(self, data: NetworkBatch):
         for message in data.operations:
-            await self.on_operation.invoke(message)
+            await self.on_operation.invoke_blocking(message)
         for message in data.server_messages:
-            await self.on_server_message.invoke(message)
+            await self.on_server_message.invoke_blocking(message)
         for message in data.user_commands:
-            await self.on_user_command.invoke(message)
+            await self.on_user_command.invoke_blocking(message)
         for message in data.user_messages:
-            await self.on_user_message.invoke(message)
+            await self.on_user_message.invoke_blocking(message)
 
     async def setup_hook(self):
         for filename in os.listdir(CONFIG.COGS_DIRECTORY):
