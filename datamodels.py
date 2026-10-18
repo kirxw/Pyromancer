@@ -42,6 +42,6 @@ class Operation(Message):
 
 class NetworkBatch(BaseModel):
     user_messages: list[UserMessage]
-    user_commands = list[UserCommand]
+    user_commands: list[UserCommand]
     server_messages: list[ServerMessage]
     operations: list[Operation]
