@@ -1,10 +1,11 @@
 # using a python file instead of json to provide objects as config options...
 
 import discord
-from dataclasses import dataclass
+from pydantic import BaseModel, ConfigDict
 
-@dataclass(frozen=True)
-class BotConfig:
+class BotConfig(BaseModel):
+    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+
     COGS_DIRECTORY: str
     PORT: int
     HOST: str
