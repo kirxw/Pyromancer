@@ -55,6 +55,11 @@ class GuildHandler(AsyncCog):
         wguild = WrappedGuild(bot=self.bot, guild=guild, guild_data=guild_data)
         GuildCache[guild.id] = wguild
 
+        return wguild
+
+    async def get_wrapped_guild(self, guild: discord.Guild):
+        return self.handle_guild(guild)
+
 
 async def setup(bot: Bot):
     await bot.add_cog(GuildHandler(bot))
