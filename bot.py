@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 import discord
 from discord import app_commands
@@ -18,6 +19,8 @@ class Bot(commands.Bot):
             ),
         )
 
+        self.ON_SETUP_FINISHED = asyncio.Event()
+
     async def setup_hook(self):
         for filename in os.listdir(CONFIG["COGS_DIRECTORY"]):
             if filename.endswith(".py") and not filename.startswith("__"):
@@ -26,3 +29,4 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")
+        self.ON_SETUP_FINISHED.set()
