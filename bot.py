@@ -1,14 +1,10 @@
 import os
-from dotenv import load_dotenv
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from config import CONFIG
-
-load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 class Bot(commands.Bot):
     def __init__(self):
