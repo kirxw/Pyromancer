@@ -1,7 +1,7 @@
-from discord.ext import commands
 from pymongo import AsyncMongoClient
 
 from bot import Bot
+from classes.asynccog import AsyncCog
 from config import CONFIG
 from datamodels import GuildData
 
@@ -12,11 +12,14 @@ GuildCollection = BotDatabase[CONFIG.GUILD_COLLECTION_NAME]
 GuildCache = {}
 
 
-class GuildHandler(commands.Cog):
+class GuildHandler(AsyncCog):
     bot: Bot
 
     def __init__(self, bot: Bot):
         self.bot = bot
+
+    async def setup_hook(self):
+        pass
 
 
 async def setup(bot: Bot):

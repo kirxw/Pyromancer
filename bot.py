@@ -1,13 +1,12 @@
 import asyncio
 import os
-from collections.abc import Callable
-from typing import Any, cast
 
 import discord
 
 # from discord import app_commands
 from discord.ext import commands
 
+from classes.asynccog import AsyncCog
 from classes.event import Event
 from config import CONFIG
 from datamodels import NetworkBatch
@@ -52,10 +51,9 @@ class Bot(commands.Bot):
                 await self.load_extension(module_name)
 
         for cog_name, cog in self.cogs.items():
-            if hasattr(cog, "setup_hook"):
-                print(f"Awaiting setup hook for {cog_name}")
-                setup_method = cast(Callable[..., Any], cog.setup_hook)
-                await setup_method()
+            if isinstance(cog, AsyncCog):
+                print(f"Blocking for cog {cog_name}")
+                await cog.setup_hook()
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")
