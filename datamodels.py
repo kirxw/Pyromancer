@@ -20,24 +20,28 @@ class BotConfig(BaseModel):
     SERVER_COLLECTION_NAME: str
 
 
+class RobloxUser(BaseModel):
+    UserId: int
+    Name: int
+    DisplayName: int
+    JoinTime: int
+
+
 class Message(BaseModel):
     JobId: str
     ServerType: Literal["Public", "Private", "Reserved", "Studio"]
     PlaceId: int
     Timestamp: int
+    SharedSecret: int
 
 
 class UserMessage(Message):
-    UserId: int
-    Name: str
-    DisplayName: str
+    Author: RobloxUser
     Content: str
 
 
 class UserCommand(Message):
-    UserId: int
-    Name: str
-    DisplayName: str
+    Author: RobloxUser
     CommandName: str
     CommandBody: str
 
@@ -56,6 +60,12 @@ class NetworkBatch(BaseModel):
     user_commands: list[UserCommand]
     server_messages: list[ServerMessage]
     operations: list[Operation]
+
+
+class GameServer(BaseModel):
+    StartupTime: int
+    SharedSecret: int
+    Players: list[RobloxUser]
 
 
 # SAVED GUILD DATA, NOT GUILD DATA OBJECT
