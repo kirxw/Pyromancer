@@ -63,6 +63,7 @@ class NetworkBatch(BaseModel):
 
 
 class GameServer(BaseModel):
+    JobId: str
     StartupTime: int
     SharedSecret: int
     Players: list[RobloxUser]
