@@ -30,7 +30,12 @@ class GuildHandler(AsyncCog):
 
     async def handle_guild(self, guild: discord.Guild):
         if guild.id in self.guilds:
-            return
+            wguild = self.guilds[guild.id]
+            await wguild.initialized_event.wait()
+            return wguild
+
+        wguild = WrappedGuild(bot=self.bot, guild=guild)
+        self.guilds[guild.id] = wguild
 
         default_data = GuildData(
             _id=guild.id,
@@ -50,9 +55,7 @@ class GuildHandler(AsyncCog):
                 "Guild document was nil after upsert. This should be impossible."
             )
 
-        wguild = WrappedGuild(bot=self.bot, guild=guild, guild_data=guild_data)
-        self.guilds[guild.id] = wguild
-
+        wguild.apply_data(guild_data)
         return wguild
 
     async def get_wrapped_guild(self, guild: discord.Guild):
