@@ -1,11 +1,21 @@
+import asyncio
+
+import discord
+
 from bot import Bot
 from datamodels import GameServer
 
 
 class WrappedServer:
     bot: Bot
-    data: GameServer
+    server: GameServer
+    initialized_event: asyncio.Event
+    thread = discord.Thread
 
-    def __init__(self, bot: Bot, data: GameServer):
+    def __init__(self, bot: Bot, server: GameServer):
         self.bot = bot
-        self.data = data
+        self.server = server
+
+    def apply_thread(self, thread: discord.Thread):
+        self.thread = thread
+        self.initialized_event.set()
