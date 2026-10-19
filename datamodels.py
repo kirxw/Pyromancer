@@ -63,6 +63,7 @@ class NetworkBatch(BaseModel):
 
 
 class GameServer(BaseModel):
+    PlaceId: int
     JobId: str
     StartupTime: int
     SharedSecret: int
