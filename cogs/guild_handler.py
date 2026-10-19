@@ -12,8 +12,6 @@ MongoClient: AsyncMongoClient[GuildData] = AsyncMongoClient(CONFIG.MONGO_URL)
 BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]
 GuildCollection = BotDatabase[CONFIG.GUILD_COLLECTION_NAME]
 
-GuildCache = {}
-
 
 class GuildHandler(AsyncCog):
     bot: Bot
@@ -31,7 +29,7 @@ class GuildHandler(AsyncCog):
             await self.handle_guild(guild)
 
     async def handle_guild(self, guild: discord.Guild):
-        if guild.id in GuildCache:
+        if guild.id in self.guilds:
             return
 
         default_data = GuildData(
@@ -53,7 +51,7 @@ class GuildHandler(AsyncCog):
             )
 
         wguild = WrappedGuild(bot=self.bot, guild=guild, guild_data=guild_data)
-        GuildCache[guild.id] = wguild
+        self.guilds[guild.id] = wguild
 
         return wguild
 
