@@ -25,17 +25,22 @@ class ServerHandler(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
+        bot.on_server_created.bind(self.on_server_created)
+        bot.on_server_closing.bind(self.on_server_closing)
+
         bot.on_user_command.bind(self.on_user_command)
         bot.on_user_message.bind(self.on_user_message)
         bot.on_server_message.bind(self.on_server_message)
         bot.on_operation.bind(self.on_operation)
 
+    # server data
     async def on_server_created(self, server: GameServer):
         pass
 
     async def on_server_closing(self, server: GameServer):
         pass
 
+    # message types
     async def on_operation(self, operation: Operation):
         pass
 

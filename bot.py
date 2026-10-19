@@ -17,6 +17,8 @@ class Bot(commands.Bot):
     on_server_message: Event
     on_user_command: Event
     on_operation: Event
+    on_server_created: Event
+    on_server_closing: Event
 
     def __init__(self):
         super().__init__(
@@ -32,6 +34,8 @@ class Bot(commands.Bot):
         self.on_server_message = Event()
         self.on_user_command = Event()
         self.on_user_message = Event()
+        self.on_server_created = Event()
+        self.on_server_closing = Event()
         self.ON_SETUP_FINISHED = (
             asyncio.Event()
         )  # use asyncio's event because it can be set and stay set
