@@ -2,7 +2,7 @@ from bot import Bot
 from datamodels import GameServer
 
 
-class Server:
+class WrappedServer:
     bot: Bot
     data: GameServer
 
