@@ -17,6 +17,7 @@ class BotConfig(BaseModel):
     MONGO_URL: str
     MONGO_DB_NAME: str
     GUILD_COLLECTION_NAME: str
+    SERVER_COLLECTION_NAME: str
 
 
 class Message(BaseModel):
