@@ -79,7 +79,7 @@ class GuildData(TypedDict):
 
 # SAVED SERVER DATA, NOT SERVER DATA OBJECT
 class ServerData(TypedDict):
-    _id: int
+    _id: str
     ThreadId: int
     GuildId: int
     ConnectedUsers: dict[str, int]
