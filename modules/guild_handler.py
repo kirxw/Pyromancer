@@ -1,9 +1,7 @@
 import discord
-from discord.ext import commands
 from pymongo import AsyncMongoClient, ReturnDocument
 
 from bot import Bot
-from classes.asynccog import AsyncCog
 from classes.wrappedguild import WrappedGuild
 from config import CONFIG
 from datamodels import GuildData
@@ -13,20 +11,12 @@ BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]
 GuildCollection = BotDatabase[CONFIG.GUILD_COLLECTION_NAME]
 
 
-class GuildHandler(AsyncCog):
+class GuildHandler:
     bot: Bot
     guilds: dict[int, WrappedGuild]
 
     def __init__(self, bot: Bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_guild_available(self, guild: discord.Guild):
-        await self.handle_guild(guild)
-
-    async def ready_hook(self):
-        for guild in self.bot.guilds:
-            await self.handle_guild(guild)
 
     async def handle_guild(self, guild: discord.Guild):
         if guild.id in self.guilds:
@@ -71,13 +61,3 @@ class GuildHandler(AsyncCog):
                 return None
 
         return await self.get_wrapped_guild(guild)
-
-
-async def setup(bot: Bot):
-    await bot.add_cog(GuildHandler(bot))
-    print("Added GuildHandler cog.")
-
-
-async def teardown(bot: Bot):
-    await bot.remove_cog("GuildHandler")
-    print("Tore down GuildHandler cog.")

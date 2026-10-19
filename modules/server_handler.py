@@ -1,4 +1,3 @@
-from discord.ext import commands
 from pymongo import AsyncMongoClient
 
 from bot import Bot
@@ -18,9 +17,9 @@ BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]
 ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 
 
-class ServerHandler(commands.Cog):
+class ServerHandler:
     bot: Bot
-    servers: dict[int, WrappedServer]
+    servers: dict[str, WrappedServer]
 
     def __init__(self, bot: Bot):
         self.bot = bot
@@ -35,7 +34,20 @@ class ServerHandler(commands.Cog):
 
     # server data
     async def on_server_created(self, server: GameServer):
-        pass
+        if server.JobId in self.servers:
+            wserver = self.servers[server.JobId]
+            await wserver.initialized_event.wait()
+            return wserver
+
+        wserver = WrappedServer(bot=self.bot, server=server)
+        self.servers[server.JobId] = wserver
+
+        # server_data: ServerData | None = await ServerCollection.find_one(
+        #     {"_id": server.JobId}
+        # )
+
+        # wserver.apply_thread()
+        return wserver
 
     async def on_server_closing(self, server: GameServer):
         pass
@@ -53,12 +65,5 @@ class ServerHandler(commands.Cog):
     async def on_user_message(self, message: UserMessage):
         pass
 
-
-async def setup(bot: Bot):
-    await bot.add_cog(ServerHandler(bot))
-    print("Added ServerHandler cog.")
-
-
-async def teardown(bot: Bot):
-    await bot.remove_cog("ServerHandler")
-    print("Tore down ServerHandler cog.")
+    async def get_wrapped_server(self, server: GameServer):
+        return await self.on_server_created(server)

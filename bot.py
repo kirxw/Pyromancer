@@ -9,6 +9,8 @@ from discord.ext import commands
 from classes.asynccog import AsyncCog
 from classes.event import Event
 from config import CONFIG
+from modules.guild_handler import GuildHandler
+from modules.server_handler import ServerHandler
 
 
 class Bot(commands.Bot):
@@ -18,6 +20,8 @@ class Bot(commands.Bot):
     on_operation: Event
     on_server_created: Event
     on_server_closing: Event
+    guild_handler: GuildHandler
+    server_handler: ServerHandler
 
     def __init__(self):
         super().__init__(
@@ -38,6 +42,9 @@ class Bot(commands.Bot):
         self.ON_SETUP_FINISHED = (
             asyncio.Event()
         )  # use asyncio's event because it can be set and stay set
+
+        self.guild_handler = GuildHandler(self)
+        self.server_handler = ServerHandler(self)
 
     async def setup_hook(self):
         for filename in os.listdir(CONFIG.COGS_DIRECTORY):
