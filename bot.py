@@ -9,7 +9,6 @@ from discord.ext import commands
 from classes.asynccog import AsyncCog
 from classes.event import Event
 from config import CONFIG
-from datamodels import NetworkBatch
 
 
 class Bot(commands.Bot):
@@ -39,16 +38,6 @@ class Bot(commands.Bot):
         self.ON_SETUP_FINISHED = (
             asyncio.Event()
         )  # use asyncio's event because it can be set and stay set
-
-    async def handle_network_batch(self, data: NetworkBatch):
-        for message in data.operations:
-            await self.on_operation.invoke_blocking(message)
-        for message in data.server_messages:
-            await self.on_server_message.invoke_blocking(message)
-        for message in data.user_commands:
-            await self.on_user_command.invoke_blocking(message)
-        for message in data.user_messages:
-            await self.on_user_message.invoke_blocking(message)
 
     async def setup_hook(self):
         for filename in os.listdir(CONFIG.COGS_DIRECTORY):

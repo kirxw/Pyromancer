@@ -7,7 +7,7 @@ from fastapi import FastAPI  # , HTTPException
 
 # from config import CONFIG
 from bot import Bot
-from datamodels import NetworkBatch
+from datamodels import GameServer, NetworkBatch
 
 load_dotenv()
 BOT_TOKEN: str | None = os.getenv("BOT_TOKEN")
@@ -26,6 +26,23 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.post("/post_network_batch/")
-async def handle_api_invoke(data: NetworkBatch):
-    await bot.handle_network_batch(data)
+@app.post("/network_batch/")
+async def handle_network_batch(data: NetworkBatch):
+    for message in data.operations:
+        await bot.on_operation.invoke_blocking(message)
+    for message in data.server_messages:
+        await bot.on_server_message.invoke_blocking(message)
+    for message in data.user_commands:
+        await bot.on_user_command.invoke_blocking(message)
+    for message in data.user_messages:
+        await bot.on_user_message.invoke_blocking(message)
+
+
+@app.post("/server_created/")
+async def handle_server_created(data: GameServer):
+    await bot.on_server_created.invoke_blocking(data)
+
+
+@app.post("/server_closing/")
+async def handle_server_closing(data: GameServer):
+    await bot.on_server_closing.invoke_blocking(data)
