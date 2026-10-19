@@ -60,6 +60,17 @@ class GuildHandler(AsyncCog):
     async def get_wrapped_guild(self, guild: discord.Guild):
         return self.handle_guild(guild)
 
+    async def get_wrapped_guild_by_id(self, id: int):
+        guild: discord.Guild | None = self.bot.get_guild(id)
+        if guild is None:
+            try:
+                guild = await self.bot.fetch_guild(id)
+            except discord.HTTPException as e:
+                print(f"Failed to fetch guild: {e}")
+                return None
+
+        return self.get_wrapped_guild(guild)
+
 
 async def setup(bot: Bot):
     await bot.add_cog(GuildHandler(bot))
