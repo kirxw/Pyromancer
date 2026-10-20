@@ -18,6 +18,7 @@ class BotConfig(BaseModel):
     MONGO_DB_NAME: str
     GUILD_COLLECTION_NAME: str
     SERVER_COLLECTION_NAME: str
+    OAUTH_REQUIRED_PERMISSIONS: str
 
 
 class RobloxUser(BaseModel):
@@ -68,6 +69,12 @@ class GameServer(BaseModel):
     StartupTime: int
     SharedSecret: int
     Players: list[RobloxUser]
+
+
+class OauthCallbackParams(BaseModel):
+    GuildId: int
+    Code: str
+    State: str
 
 
 # SAVED GUILD DATA, NOT GUILD DATA OBJECT
