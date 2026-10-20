@@ -17,4 +17,5 @@ CONFIG = BotConfig(
     GUILD_COLLECTION_NAME="GUILDS",
     SERVER_COLLECTION_NAME="GAME_SERVERS",
     OAUTH_REQUIRED_PERMISSIONS="openid universe:read universe-messaging-service:publish",
+    OAUTH_REDIRECT_URL="",
 )

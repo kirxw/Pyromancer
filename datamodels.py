@@ -19,6 +19,7 @@ class BotConfig(BaseModel):
     GUILD_COLLECTION_NAME: str
     SERVER_COLLECTION_NAME: str
     OAUTH_REQUIRED_PERMISSIONS: str
+    OAUTH_REDIRECT_URL: str
 
 
 class RobloxUser(BaseModel):
