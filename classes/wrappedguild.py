@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 import asyncio
+from typing import TYPE_CHECKING
 
 import discord
 
-from bot import Bot
 from datamodels import GuildData
+
+if TYPE_CHECKING:
+    from bot import Bot
 
 
 class WrappedGuild:

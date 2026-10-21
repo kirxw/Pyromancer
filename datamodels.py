@@ -73,9 +73,8 @@ class GameServer(BaseModel):
 
 
 class OauthCallbackParams(BaseModel):
-    GuildId: int
-    Code: str
-    State: str
+    code: str
+    state: str
 
 
 # SAVED GUILD DATA, NOT GUILD DATA OBJECT

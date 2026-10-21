@@ -1,6 +1,9 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from pymongo import AsyncMongoClient
 
-from bot import Bot
 from classes.wrappedserver import WrappedServer
 from config import CONFIG
 from datamodels import (
@@ -11,6 +14,9 @@ from datamodels import (
     UserCommand,
     UserMessage,
 )
+
+if TYPE_CHECKING:
+    from bot import Bot
 
 MongoClient: AsyncMongoClient[ServerData] = AsyncMongoClient(CONFIG.MONGO_URL)
 BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]

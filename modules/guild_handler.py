@@ -1,10 +1,16 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import discord
 from pymongo import AsyncMongoClient, ReturnDocument
 
-from bot import Bot
 from classes.wrappedguild import WrappedGuild
 from config import CONFIG
 from datamodels import GuildData
+
+if TYPE_CHECKING:
+    from bot import Bot
 
 MongoClient: AsyncMongoClient[GuildData] = AsyncMongoClient(CONFIG.MONGO_URL)
 BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]
@@ -56,7 +62,7 @@ class GuildHandler:
         if guild is None:
             try:
                 guild = await self.bot.fetch_guild(id)
-            except discord.HTTPException as e:
+            except discord.NotFound as e:
                 print(f"Failed to fetch guild: {e}")
                 return None
 
