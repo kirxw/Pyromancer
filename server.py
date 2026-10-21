@@ -79,9 +79,6 @@ def GenerateAuthUrl(guild_id: int | str, user_id: int | str):
     return f"https://apis.roblox.com/oauth/v1/authorize?{urlparse.urlencode(params)}"
 
 
-print(GenerateAuthUrl("[GUILDID]", "[USERID]"))
-
-
 @app.get("/oauth/callback")
 async def oauth_callback(request: Request):
     query_params = dict(request.query_params)
