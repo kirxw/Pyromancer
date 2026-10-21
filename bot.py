@@ -50,7 +50,7 @@ class Bot(commands.Bot):
         for filename in os.listdir(CONFIG.COGS_DIRECTORY):
             if filename.endswith(".py") and not filename.startswith("__"):
                 module_name = filename[:-3]
-                await self.load_extension(module_name)
+                await self.load_extension(f"{CONFIG.COGS_DIRECTORY}.{module_name}")
 
         for cog_name, cog in self.cogs.items():
             if isinstance(cog, AsyncCog):
