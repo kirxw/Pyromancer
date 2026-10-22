@@ -77,12 +77,28 @@ class OauthCallbackParams(BaseModel):
     state: str
 
 
+class RobloxConnection(BaseModel):
+    AccessToken: str
+    RefreshToken: str
+    ExpiresAt: int
+
+    RobloxIssuerId: int
+
+
+class ManagedPlace(BaseModel):
+    GameId: int
+    ConnectionUUID: str
+    SharedSecret: str
+
+
 # SAVED GUILD DATA, NOT GUILD DATA OBJECT
 class GuildData(TypedDict):
     _id: int
-    ManagedPlaces: list[dict[int, str]]
     PermissionRoles: list[int]
     SharedSecret: str | None
+
+    RobloxConnections: dict[str, RobloxConnection]  # UUID: RobloxConnection
+    ManagedPlaces: dict[int, ManagedPlace]  # PlaceID: ManagedPlace
 
 
 # SAVED SERVER DATA, NOT SERVER DATA OBJECT

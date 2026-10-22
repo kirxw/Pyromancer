@@ -35,9 +35,10 @@ class GuildHandler:
 
         default_data = GuildData(
             _id=guild.id,
-            ManagedPlaces=[],
             PermissionRoles=[],
             SharedSecret=None,
+            RobloxConnections={},
+            ManagedPlaces={},
         )
 
         guild_data: GuildData | None = await GuildCollection.find_one_and_update(
