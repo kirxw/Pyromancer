@@ -77,18 +77,27 @@ class OauthCallbackParams(BaseModel):
     state: str
 
 
-class RobloxConnection(BaseModel):
+class RobloxConnection(TypedDict):
     AccessToken: str
     RefreshToken: str
     ExpiresAt: int
 
-    RobloxIssuerId: int
+    IssuedAt: int
+    DiscordIssuerId: int
 
 
-class ManagedPlace(BaseModel):
+class ManagedPlace(TypedDict):
     GameId: int
     ConnectionUUID: str
     SharedSecret: str
+
+
+class TokensFromCodeResponse(TypedDict):
+    access_token: str
+    refresh_token: str
+    token_type: str
+    expires_in: int
+    scope: str
 
 
 # SAVED GUILD DATA, NOT GUILD DATA OBJECT
