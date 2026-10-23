@@ -1,17 +1,13 @@
 import asyncio
 import os
-import secrets
-import urllib.parse as urlparse
 from contextlib import asynccontextmanager
 
-import discord
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Response
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from pydantic import ValidationError
 
 from bot import Bot
-from config import CONFIG
 from datamodels import GameServer, NetworkBatch, OauthCallbackParams
 
 load_dotenv()
@@ -62,23 +58,6 @@ async def handle_server_closing(data: GameServer):
     await bot.on_server_closing.invoke_blocking(data)
 
 
-def GenerateAuthUrl(guild_id: int | str, user_id: int | str):
-    state = {
-        "guild_id": str(guild_id),
-        "user_id": str(user_id),
-        "nonce": secrets.token_hex(16),
-    }
-
-    params = {
-        "client_id": str(OAUTH2_CLIENT_ID),
-        "redirect_uri": CONFIG.OAUTH_REDIRECT_URL,
-        "scope": CONFIG.OAUTH_REQUIRED_PERMISSIONS,
-        "response_type": "code",
-        "state": timed_state_serializer.dumps(state),
-    }
-    return f"https://apis.roblox.com/oauth/v1/authorize?{urlparse.urlencode(params)}"
-
-
 @app.get("/oauth/callback")
 async def oauth_callback(request: Request):
     query_params = dict(request.query_params)
@@ -112,20 +91,6 @@ async def oauth_callback(request: Request):
         raise HTTPException(
             status_code=500, detail=f"Unable to fetch guild with id: {guild_id}"
         )
-    member: discord.Member | None = wguild.guild.get_member(user_id)
-    if member is None:
-        try:
-            member = await wguild.guild.fetch_member(user_id)
-        except discord.NotFound:
-            raise HTTPException(
-                status_code=500, detail=f"Failed to fetch user with id: {user_id}"
-            )
-
-    if (not member.guild_permissions.administrator) and (
-        member.id != wguild.guild.owner_id
-    ):
-        raise HTTPException(
-            status_code=403, detail="User is not administrator in specified server."
-        )
+    await wguild.try_add_connection(user_id, params)
 
     return Response(content="Successfully linked.", status_code=200)
