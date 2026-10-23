@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import uuid
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import discord
@@ -7,7 +9,7 @@ from pymongo import AsyncMongoClient, ReturnDocument
 
 from classes.wrappedguild import WrappedGuild
 from config import CONFIG
-from datamodels import GuildData
+from datamodels import GuildData, RobloxConnection, TokensFromCodeResponse
 
 if TYPE_CHECKING:
     from bot import Bot
@@ -68,3 +70,22 @@ class GuildHandler:
                 return None
 
         return await self.get_wrapped_guild(guild)
+
+    async def save_access_tokens(
+        self, wguild: WrappedGuild, tokens: TokensFromCodeResponse, user_id: int
+    ):
+        now: float = datetime.now().timestamp()
+        time_remaining: float = tokens["expires_in"]
+        expiration = int(now + time_remaining)
+        connection: RobloxConnection = RobloxConnection(
+            AccessToken=tokens["access_token"],
+            RefreshToken=tokens["refresh_token"],
+            ExpiresAt=expiration,
+            IssuedAt=int(now),
+            DiscordIssuerId=user_id,
+        )
+        UUID = uuid.uuid4()
+        await GuildCollection.update_one(
+            {"_id": wguild.guild.id},
+            {"$set": {f"RobloxConnections.{UUID}": connection}},
+        )
