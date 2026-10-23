@@ -84,8 +84,6 @@ async def oauth_callback(request: Request):
         raise HTTPException(status_code=400, detail="Malformed guild data.")
     # im highk too lazy to actually save and consume the nonce i'll do it later toootalllyyyy
 
-    # TODO: save the data :3
-
     wguild = await bot.guild_handler.get_wrapped_guild_by_id(guild_id)
     if wguild is None:
         raise HTTPException(
