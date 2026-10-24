@@ -54,7 +54,10 @@ class GuildHandler:
                 "Guild document was nil after upsert. This should be impossible."
             )
 
-        self.bot.server_handler.place_connection_map.update(guild_data["ManagedPlaces"])
+        self.bot.server_handler.managed_place_cache.update(guild_data["ManagedPlaces"])
+        self.bot.server_handler.roblox_connection_cache.update(
+            guild_data["RobloxConnections"]
+        )
 
         wguild.apply_data(guild_data)
         return wguild
