@@ -60,7 +60,14 @@ class GuildCog(AsyncCog):
 
         if place_id in wguild.data["ManagedPlaces"]:
             await interaction.followup.send(
-                f"Place with id {place_id} is already managed!", ephemeral=True
+                f"This guild already manages place with id {place_id}", ephemeral=True
+            )
+            return
+
+        if place_id in self.bot.server_handler.place_connection_map:
+            await interaction.followup.send(
+                f"The place with id {place_id} is already managed by a **different** guild.",
+                ephemeral=True,
             )
             return
 
