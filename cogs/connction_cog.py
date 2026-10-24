@@ -1,10 +1,13 @@
 import datetime
+import secrets
 
 import discord
+import httpx
 from discord import app_commands
 
 from bot import Bot
 from classes.asynccog import AsyncCog
+from datamodels import ManagedPlace
 from modules.oauth2_networking import generate_user_auth_url
 
 
@@ -40,18 +43,64 @@ class GuildCog(AsyncCog):
         name="manage_place",
         description="Manage a place from any game that's already been connected via /connect",
     )
-    async def manage_place(self, interaction: discord.Interaction, place_id: str):
+    async def manage_place(self, interaction: discord.Interaction, place_id: str | int):
         member, guild = await is_owner(interaction=interaction)
         if member == None or guild == None:
             return
+        await interaction.response.defer(ephemeral=True)
+        wguild = await self.bot.guild_handler.get_wrapped_guild(guild)
 
         try:
-            place_int = int(place_id)
+            place_id = int(place_id)
         except ValueError:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"place_id must be an integer, got {place_id}", ephemeral=True
             )
             return
+
+        if place_id in wguild.data["ManagedPlaces"]:
+            await interaction.followup.send(
+                f"Place with id {place_id} is already managed!", ephemeral=True
+            )
+            return
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"https://apis.roblox.com/universes/v1/places/{place_id}/universe"
+            )
+            response.raise_for_status()
+            universe_id: int = response.json()["universeId"]
+
+        connection_uuid: str | None = None
+        for cuuid, connection in wguild.data["RobloxConnections"].items():
+            if universe_id in connection["ManagedUniverseIds"]:
+                connection_uuid = cuuid
+                break
+        if connection_uuid is None:
+            await interaction.followup.send(
+                f"This guild is not linked to universe {universe_id}", ephemeral=True
+            )
+            return
+
+        secret_key = secrets.token_urlsafe(32)
+        managed_place = ManagedPlace(
+            SharedSecret=secret_key,
+            UniverseId=universe_id,
+            ConnectionUUID=connection_uuid,
+        )
+
+        await wguild.update(
+            {
+                "$set": {
+                    f"ManagedPlaces.{place_id}": managed_place,
+                }
+            }
+        )
+
+        await interaction.followup.send(
+            f"Successfully linked place {place_id}.\nHere is that place's communication token. Save it somewhere, you won't be able to fetch it again:\n||{secret_key}||",
+            ephemeral=True,
+        )
 
     @app_commands.command(
         name="connect",
