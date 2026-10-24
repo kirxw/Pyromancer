@@ -8,6 +8,7 @@ from classes.wrappedserver import WrappedServer
 from config import CONFIG
 from datamodels import (
     GameServer,
+    ManagedPlace,
     Operation,
     ServerData,
     ServerMessage,
@@ -26,9 +27,13 @@ ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 class ServerHandler:
     bot: Bot
     servers: dict[str, WrappedServer]
+    place_connection_map: dict[int, ManagedPlace]
 
     def __init__(self, bot: Bot):
         self.bot = bot
+
+        self.servers = {}
+        self.place_connection_map = {}
 
         bot.on_server_created.bind(self.on_server_created)
         bot.on_server_closing.bind(self.on_server_closing)
