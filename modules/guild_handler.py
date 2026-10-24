@@ -106,6 +106,7 @@ class GuildHandler:
         await wguild.update(
             {"$set": {f"RobloxConnections.{connection_uuid}": connection}}
         )
+        self.bot.server_handler.roblox_connection_cache[connection_uuid] = connection
 
         return connection_uuid
 
@@ -124,6 +125,9 @@ class GuildHandler:
                 }
             }
         )
+        self.bot.server_handler.roblox_connection_cache[connection_uuid] = wguild.data[
+            "RobloxConnections"
+        ][connection_uuid]
 
     async def proper_update_guild_data(
         self, wguild: WrappedGuild, update: dict[str, Any]

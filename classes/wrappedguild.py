@@ -92,3 +92,6 @@ class WrappedGuild:
                 }
             }
         )
+        self.bot.server_handler.roblox_connection_cache[UUID] = self.data[
+            "RobloxConnections"
+        ][UUID]
