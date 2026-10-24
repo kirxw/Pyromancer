@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 class WrappedGuild:
     bot: Bot
     guild: discord.Guild
-    guild_data: GuildData
+    data: GuildData
     initialized_event: asyncio.Event
 
     def __init__(self, bot: Bot, guild: discord.Guild):
