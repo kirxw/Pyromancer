@@ -75,13 +75,13 @@ async def oauth_callback(request: Request):
         print(f"Failed handling oauth callback: BadSignature: {e}")
         raise HTTPException(
             status_code=400, detail="Request state expired. Please try again."
-        )
+        ) from e
     except KeyError as e:
         print(f"Failed handling oauth callback: KeyError: {e}")
-        raise HTTPException(status_code=400, detail="Malformed request state.")
+        raise HTTPException(status_code=400, detail="Malformed request state.") from e
     except ValueError as e:
         print(f"Failed handling oauth callback: ValueError: {e}")
-        raise HTTPException(status_code=400, detail="Malformed guild data.")
+        raise HTTPException(status_code=400, detail="Malformed guild data.") from e
     # im highk too lazy to actually save and consume the nonce i'll do it later toootalllyyyy
 
     wguild = await bot.guild_handler.get_wrapped_guild_by_id(guild_id)
