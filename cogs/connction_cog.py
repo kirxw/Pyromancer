@@ -64,7 +64,7 @@ class GuildCog(AsyncCog):
             )
             return
 
-        if place_id in self.bot.server_handler.place_connection_map:
+        if place_id in self.bot.server_handler.managed_place_cache:
             await interaction.followup.send(
                 f"The place with id {place_id} is already managed by a **different** guild.",
                 ephemeral=True,
@@ -103,6 +103,8 @@ class GuildCog(AsyncCog):
                 }
             }
         )
+
+        self.bot.server_handler.managed_place_cache[place_id] = managed_place
 
         await interaction.followup.send(
             f"Successfully linked place {place_id}.\nHere is that place's communication token. Save it somewhere, you won't be able to fetch it again:\n||{secret_key}||",
