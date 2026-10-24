@@ -54,10 +54,13 @@ class GuildHandler:
                 "Guild document was nil after upsert. This should be impossible."
             )
 
-        self.bot.server_handler.managed_place_cache.update(guild_data["ManagedPlaces"])
-        self.bot.server_handler.roblox_connection_cache.update(
-            guild_data["RobloxConnections"]
-        )
+        for place_id, managed_place in guild_data["ManagedPlaces"].items():
+            self.bot.server_handler.place_cache[place_id] = {
+                "ConnectionUUID": managed_place["ConnectionUUID"],
+                "UniverseId": managed_place["UniverseId"],
+                "WGuild": wguild,
+                "SharedSecret": managed_place["SharedSecret"],
+            }
 
         wguild.apply_data(guild_data)
         return wguild
@@ -106,7 +109,6 @@ class GuildHandler:
         await wguild.update(
             {"$set": {f"RobloxConnections.{connection_uuid}": connection}}
         )
-        self.bot.server_handler.roblox_connection_cache[connection_uuid] = connection
 
         return connection_uuid
 
@@ -125,9 +127,6 @@ class GuildHandler:
                 }
             }
         )
-        self.bot.server_handler.roblox_connection_cache[connection_uuid] = wguild.data[
-            "RobloxConnections"
-        ][connection_uuid]
 
     async def proper_update_guild_data(
         self, wguild: WrappedGuild, update: dict[str, Any]

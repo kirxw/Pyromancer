@@ -80,7 +80,7 @@ class WrappedGuild:
             universe_ids = resource["resources"]["universe"]["ids"]
             managed_universe_ids.extend(universe_ids)
 
-        print("MANAGING", managed_universe_ids)
+        print("NOW MANAGING ADDITIONAL IDS:", managed_universe_ids)
 
         await self.update(
             {
@@ -92,6 +92,3 @@ class WrappedGuild:
                 }
             }
         )
-        self.bot.server_handler.roblox_connection_cache[UUID] = self.data[
-            "RobloxConnections"
-        ][UUID]

@@ -8,7 +8,6 @@ from classes.wrappedserver import WrappedServer
 from config import CONFIG
 from datamodels import (
     GameServer,
-    ManagedPlace,
     Operation,
     ServerData,
     ServerMessage,
@@ -18,6 +17,7 @@ from datamodels import (
 
 if TYPE_CHECKING:
     from bot import Bot
+    from classes.wrappedguild import WrappedGuild
 
 MongoClient: AsyncMongoClient[ServerData] = AsyncMongoClient(CONFIG.MONGO_URL)
 BotDatabase = MongoClient[CONFIG.MONGO_DB_NAME]
@@ -27,7 +27,9 @@ ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 class ServerHandler:
     bot: Bot
     servers: dict[str, WrappedServer]
-    place_cache: dict[int, ManagedPlace]
+    place_cache: dict[
+        int, dict[str, WrappedGuild | str | int]
+    ]  # i am so done right now okay if youre reading this feel free
 
     def __init__(self, bot: Bot):
         self.bot = bot
