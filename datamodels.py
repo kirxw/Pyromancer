@@ -85,6 +85,12 @@ class RobloxConnection(TypedDict):
     IssuedAt: int
     DiscordIssuerId: int
 
+    RobloxIssuerId: int | None
+    RobloxOwnerType: str | None
+
+    ManagedUniverseIds: list[int]
+    ResourcesInitialized: bool
+
 
 class ManagedPlace(TypedDict):
     GameId: int
