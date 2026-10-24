@@ -10,6 +10,7 @@ from datamodels import (
     GameServer,
     ManagedPlace,
     Operation,
+    RobloxConnection,
     ServerData,
     ServerMessage,
     UserCommand,
@@ -28,6 +29,7 @@ class ServerHandler:
     bot: Bot
     servers: dict[str, WrappedServer]
     place_connection_map: dict[int, ManagedPlace]
+    uuid_oauth_connection_map: dict[str, RobloxConnection]
 
     def __init__(self, bot: Bot):
         self.bot = bot
