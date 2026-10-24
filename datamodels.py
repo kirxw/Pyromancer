@@ -93,7 +93,7 @@ class RobloxConnection(TypedDict):
 
 
 class ManagedPlace(TypedDict):
-    GameId: int
+    UniverseId: int
     ConnectionUUID: str
     SharedSecret: str
 
