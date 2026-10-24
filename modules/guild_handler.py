@@ -132,5 +132,5 @@ class GuildHandler:
             raise RuntimeError(
                 "Guild document was nil after upsert. This should be impossible."
             )
-        wguild.guild_data = guild_data
+        wguild.data = guild_data
         return guild_data
