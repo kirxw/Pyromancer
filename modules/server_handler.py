@@ -10,7 +10,6 @@ from datamodels import (
     GameServer,
     ManagedPlace,
     Operation,
-    RobloxConnection,
     ServerData,
     ServerMessage,
     UserCommand,
@@ -28,14 +27,12 @@ ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 class ServerHandler:
     bot: Bot
     servers: dict[str, WrappedServer]
-    managed_place_cache: dict[int, ManagedPlace]
-    roblox_connection_cache: dict[str, RobloxConnection]
+    place_cache: dict[int, ManagedPlace]
 
     def __init__(self, bot: Bot):
         self.bot = bot
 
         self.servers = {}
-        self.place_connection_map = {}
 
         bot.on_server_created.bind(self.on_server_created)
         bot.on_server_closing.bind(self.on_server_closing)
