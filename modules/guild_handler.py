@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import discord
 from pymongo import AsyncMongoClient, ReturnDocument
@@ -71,8 +71,15 @@ class GuildHandler:
 
         return await self.get_wrapped_guild(guild)
 
+    async def get_and_save_resources(self, wguild: WrappedGuild, connection_uuid: str):
+        pass
+
     async def save_access_tokens(
-        self, wguild: WrappedGuild, tokens: TokensFromCodeResponse, user_id: int
+        self,
+        wguild: WrappedGuild,
+        tokens: TokensFromCodeResponse,
+        user_id: int,
+        connection_uuid: str | None = None,
     ):
         now: float = datetime.now().timestamp()
         time_remaining: float = tokens["expires_in"]
@@ -83,9 +90,47 @@ class GuildHandler:
             ExpiresAt=expiration,
             IssuedAt=int(now),
             DiscordIssuerId=user_id,
+            ResourcesInitialized=False,
+            ManagedUniverseIds=[],
+            RobloxIssuerId=None,
+            RobloxOwnerType=None,
         )
-        UUID = uuid.uuid4()
-        await GuildCollection.update_one(
-            {"_id": wguild.guild.id},
-            {"$set": {f"RobloxConnections.{UUID}": connection}},
+        if connection_uuid is None:
+            connection_uuid = str(uuid.uuid4())
+
+        await wguild.update(
+            {"$set": {f"RobloxConnections.{connection_uuid}": connection}}
         )
+
+        return connection_uuid
+
+    async def update_access_tokens(
+        self, wguild: WrappedGuild, connection_uuid: str, tokens: TokensFromCodeResponse
+    ):
+        await wguild.update(
+            {
+                "$set": {
+                    f"RobloxConnections.{connection_uuid}.AccessToken": tokens[
+                        "access_token"
+                    ],
+                    f"RobloxConnections.{connection_uuid}.RefreshToken": tokens[
+                        "refresh_token"
+                    ],
+                }
+            }
+        )
+
+    async def proper_update_guild_data(
+        self, wguild: WrappedGuild, update: dict[str, Any]
+    ):
+        guild_data: GuildData | None = await GuildCollection.find_one_and_update(
+            filter={"_id": wguild.guild.id},
+            update=update,
+            return_document=ReturnDocument.AFTER,
+        )
+        if guild_data is None:
+            raise RuntimeError(
+                "Guild document was nil after upsert. This should be impossible."
+            )
+        wguild.guild_data = guild_data
+        return guild_data
