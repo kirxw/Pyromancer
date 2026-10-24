@@ -54,6 +54,8 @@ class GuildHandler:
                 "Guild document was nil after upsert. This should be impossible."
             )
 
+        self.bot.server_handler.place_connection_map.update(guild_data["ManagedPlaces"])
+
         wguild.apply_data(guild_data)
         return wguild
 
