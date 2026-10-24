@@ -22,6 +22,47 @@ assert isinstance(OAUTH_STATE_VALIDATION_KEY, str), (
 timed_state_serializer = URLSafeTimedSerializer(OAUTH_STATE_VALIDATION_KEY)
 
 
+async def get_resources(access_token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://apis.roblox.com/oauth/v1/token/resources",
+            data={
+                "token": access_token,
+                "client_id": OAUTH2_CLIENT_ID,
+                "client_secret": OAUTH2_SECRET,
+            },
+        )
+        response.raise_for_status()
+        return response.json()
+
+
+async def get_roblox_user(access_token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://apis.roblox.com/oauth/v1/userinfo",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+        response.raise_for_status()
+        return response.json()
+
+
+async def get_tokens_from_refresh(refresh_token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://apis.roblox.com/oauth/v1/token",
+            data={
+                "client_id": OAUTH2_CLIENT_ID,
+                "client_secret": OAUTH2_SECRET,
+                "grant_type": "refresh_token",
+                "refresh_token": refresh_token,
+            },
+        )
+        response.raise_for_status()
+        return response.json()
+
+
 async def get_tokens_from_code(code: str):
     async with httpx.AsyncClient() as client:
         response = await client.post(
