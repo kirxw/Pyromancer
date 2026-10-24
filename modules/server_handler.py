@@ -28,8 +28,8 @@ ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 class ServerHandler:
     bot: Bot
     servers: dict[str, WrappedServer]
-    place_connection_map: dict[int, ManagedPlace]
-    uuid_oauth_connection_map: dict[str, RobloxConnection]
+    managed_place_cache: dict[int, ManagedPlace]
+    roblox_connection_cache: dict[str, RobloxConnection]
 
     def __init__(self, bot: Bot):
         self.bot = bot
