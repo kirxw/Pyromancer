@@ -1,10 +1,13 @@
-from typing import Literal, TypedDict
+""" The data types used by Pyromancer """
+
+from typing import Literal, TypedDict, Any
 
 import discord
 from pydantic import BaseModel, ConfigDict
 
 
 class BotConfig(BaseModel):
+    """ Pyromancer's configuration """
     model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
 
     COGS_DIRECTORY: str
@@ -23,6 +26,7 @@ class BotConfig(BaseModel):
 
 
 class RobloxUser(BaseModel):
+    """ Representation of an ingame roblox user """
     UserId: int
     Name: int
     DisplayName: int
@@ -30,34 +34,41 @@ class RobloxUser(BaseModel):
 
 
 class Message(BaseModel):
-    JobId: str
-    ServerType: Literal["Public", "Private", "Reserved", "Studio"]
-    PlaceId: int
+    """ The base of an inbound message """
+    #JobId: str
+    #ServerType: Literal["Public", "Private", "Reserved", "Studio"]
+    #PlaceId: int
     Timestamp: int
     SharedSecret: int
 
 
 class UserMessage(Message):
+    """ A message sent by an ingame roblox user """
     Author: RobloxUser
     Content: str
 
 
 class UserCommand(Message):
+    """ A command issued by an ingame roblox user """
     Author: RobloxUser
     CommandName: str
     CommandBody: str
 
 
 class ServerMessage(Message):
+    """ A message to display sent by a roblox server """
     Content: str
+    Embeds: list[Any]
 
 
 class Operation(Message):
+    """ An automated operation sent by a roblox server """
     OperationName: str
     OperationBody: str
 
 
 class NetworkBatch(BaseModel):
+    """ A batch of messages sent by a roblox server """
     user_messages: list[UserMessage]
     user_commands: list[UserCommand]
     server_messages: list[ServerMessage]
@@ -65,6 +76,7 @@ class NetworkBatch(BaseModel):
 
 
 class GameServer(BaseModel):
+    """ An active roblox server """
     PlaceId: int
     JobId: str
     StartupTime: int
@@ -73,11 +85,13 @@ class GameServer(BaseModel):
 
 
 class OauthCallbackParams(BaseModel):
+    """ The URL params recieved during oauth completion """
     code: str
     state: str
 
 
 class RobloxConnection(TypedDict):
+    """ An oauth connection to a roblox account """
     AccessToken: str
     RefreshToken: str
     ExpiresAt: int
@@ -93,12 +107,14 @@ class RobloxConnection(TypedDict):
 
 
 class ManagedPlace(TypedDict):
+    """ A place managed through a connection """
     UniverseId: int
     ConnectionUUID: str
     SharedSecret: str
 
 
 class TokensFromCodeResponse(TypedDict):
+    """ The result returned by fetching oauth tokens """
     access_token: str
     refresh_token: str
     token_type: str
@@ -106,8 +122,8 @@ class TokensFromCodeResponse(TypedDict):
     scope: str
 
 
-# SAVED GUILD DATA, NOT GUILD DATA OBJECT
 class GuildData(TypedDict):
+    """ Saved data about a guild, this is not a guild object """
     _id: int
     PermissionRoles: list[int]
     SharedSecret: str | None
@@ -116,8 +132,8 @@ class GuildData(TypedDict):
     ManagedPlaces: dict[int, ManagedPlace]  # PlaceID: ManagedPlace
 
 
-# SAVED SERVER DATA, NOT SERVER DATA OBJECT
 class ServerData(TypedDict):
+    """ Saved data about an active roblox server, this is not a server object """
     _id: str
     ThreadId: int
     GuildId: int
