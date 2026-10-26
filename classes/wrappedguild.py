@@ -1,3 +1,5 @@
+""" File holding the WrappedGuild class """
+
 from __future__ import annotations
 
 import asyncio
@@ -19,6 +21,11 @@ if TYPE_CHECKING:
 
 
 class WrappedGuild:
+    """
+    An object containing a guild, data about the guild, and methods pertaining to the management of guild data
+    Exposes WrappedGuild.initialized_event, which will be set after data has been applied
+    """
+
     bot: Bot
     guild: discord.Guild
     data: GuildData
@@ -31,14 +38,17 @@ class WrappedGuild:
         self.guild_handler = bot.guild_handler
 
     def apply_data(self, data: GuildData):
+        """ Sets the WrappedGuild's data and sets the initialized event """
+
         self.data = data
         self.initialized_event.set()
 
-    # just a cleaner wrapper
     async def update(self, update: dict[str, Any]):
+        """ A wrapper to guild_handler.update(), runs a mongo query and updates the cached data too """
         return await self.guild_handler.proper_update_guild_data(self, update)
 
     async def get_access_token(self, connection_uuid: str):
+        """ Gets the most recent access token, fetching a new one if it's expired """
         roblox_connections = self.data["RobloxConnections"]
         if connection_uuid not in roblox_connections:
             raise KeyError(f"Unknown connection UUID {connection_uuid}")
@@ -55,6 +65,7 @@ class WrappedGuild:
         return connection["AccessToken"]
 
     async def try_add_connection(self, user_id: int, params: OauthCallbackParams):
+        """ Attempts to add a RobloxConnection given an oauth callback """
         member: discord.Member | None = self.guild.get_member(user_id)
         if member is None:
             try:
