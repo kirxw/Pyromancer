@@ -26,7 +26,7 @@ class InboundServerMessage(InboundMessage):
     Body: str
 
 class InboundPollBuffer(BaseModel):
-    Buffers: list[InboundUserCommand | InboundUserMessage | InboundServerMessage]
+    Buffers: dict[int, InboundUserCommand | InboundUserMessage | InboundServerMessage]
     RequestedBuffers: list[int]
     CurrentId: int
 
@@ -48,6 +48,6 @@ class OutboundUserCommand(BaseModel):
 
 
 class OutboundPollBuffer(BaseModel):
-    Buffers: list
-    RequestedBuffers: list[OutboundUserCommand,OutboundUserMessage]
+    Buffers: dict[int,list[OutboundUserCommand,OutboundUserMessage]]
+    RequestedBuffers: list[int]
     CurrentId: int
