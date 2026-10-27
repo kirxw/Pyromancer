@@ -1,3 +1,5 @@
+""" A collection of oauth2 functions """
+
 import os
 import secrets
 import urllib.parse as urlparse
@@ -23,6 +25,7 @@ timed_state_serializer = URLSafeTimedSerializer(OAUTH_STATE_VALIDATION_KEY)
 
 
 async def get_resources(access_token: str):
+    """ Fetch available resources """
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://apis.roblox.com/oauth/v1/token/resources",
@@ -37,6 +40,7 @@ async def get_resources(access_token: str):
 
 
 async def get_roblox_user(access_token: str):
+    """ Fetch the user associated with the oauth connectin """
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://apis.roblox.com/oauth/v1/userinfo",
@@ -49,6 +53,7 @@ async def get_roblox_user(access_token: str):
 
 
 async def get_tokens_from_refresh(refresh_token: str):
+    """ Update the auth token and refresh token given a refresh token """
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://apis.roblox.com/oauth/v1/token",
@@ -64,6 +69,7 @@ async def get_tokens_from_refresh(refresh_token: str):
 
 
 async def get_tokens_from_code(code: str):
+    """ Get the auth and refresh from the one time code after first auth """
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "https://apis.roblox.com/oauth/v1/token",
@@ -79,6 +85,7 @@ async def get_tokens_from_code(code: str):
 
 
 def generate_user_auth_url(guild_id: int | str, user_id: int | str):
+    """ Format the oauth url """
     state = {
         "guild_id": str(guild_id),
         "user_id": str(user_id),
