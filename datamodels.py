@@ -90,6 +90,12 @@ class OauthCallbackParams(BaseModel):
     state: str
 
 
+class DiscordUser(BaseModel):
+    UserId: str
+    Name: str
+    DisplayName: str
+
+
 class RobloxConnection(TypedDict):
     """ An oauth connection to a roblox account """
     AccessToken: str
