@@ -30,9 +30,8 @@ class InboundServerMessage(InboundMessage):
 
 
 class InboundPollBuffer(BaseModel):
-    Buffers: dict[int, InboundUserCommand | InboundUserMessage | InboundServerMessage]
-    RequestedBuffers: list[int]
-    CurrentId: int
+    Buffers: dict[int, list[InboundMessage]]
+    HighestRecievedId: int
 
 
 # outbound stuffs
@@ -54,6 +53,5 @@ class OutboundUserCommand(BaseModel):
 
 
 class OutboundPollBuffer(BaseModel):
-    Buffers: dict[int, list[OutboundUserCommand | OutboundUserMessage]]
-    RequestedBuffers: list[int]
-    CurrentId: int
+    Buffers: dict[int, list[OutboundMessage]]
+    HighestRecievedId: int
