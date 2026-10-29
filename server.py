@@ -1,14 +1,19 @@
 import asyncio
 import os
 from contextlib import asynccontextmanager
+from typing import Annotated, Any
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, Header, HTTPException, Request, Response
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from pydantic import ValidationError
 
 from bot import Bot
-from datamodels import GameServer, NetworkBatch, OauthCallbackParams
+from datamodels import (
+    InboundRequestHeaders,
+    OauthCallbackParams,
+)
+from structuring import InboundPollBuffer
 
 load_dotenv()
 BOT_TOKEN: str | None = os.getenv("BOT_TOKEN")
@@ -37,24 +42,24 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/network_batch/")
-async def handle_network_batch(data: NetworkBatch):
-    for message in data.operations:
-        await bot.on_operation.invoke_blocking(message)
-    for message in data.server_messages:
-        await bot.on_server_message.invoke_blocking(message)
-    for message in data.user_commands:
-        await bot.on_user_command.invoke_blocking(message)
-    for message in data.user_messages:
-        await bot.on_user_message.invoke_blocking(message)
+async def handle_network_batch(
+    data: InboundPollBuffer, headers: Annotated[InboundRequestHeaders, Header()]
+):
+    pass
 
 
 @app.post("/server_created/")
-async def handle_server_created(data: GameServer):
+async def handle_server_created(
+    data: Any, headers: Annotated[InboundRequestHeaders, Header()]
+):
+
     await bot.on_server_created.invoke_blocking(data)
 
 
 @app.post("/server_closing/")
-async def handle_server_closing(data: GameServer):
+async def handle_server_closing(
+    data: Any, headers: Annotated[InboundRequestHeaders, Header()]
+):
     await bot.on_server_closing.invoke_blocking(data)
 
 
