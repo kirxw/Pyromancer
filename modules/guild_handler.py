@@ -115,7 +115,7 @@ class GuildHandler:
     async def update_access_tokens(
         self, wguild: WrappedGuild, connection_uuid: str, tokens: TokensFromCodeResponse
     ):
-        now: float = datetime.datetime.now(datetime.UTC).timestamp()
+        now: float = datetime.now().timestamp()
         await wguild.update(
             {
                 "$set": {
@@ -125,7 +125,9 @@ class GuildHandler:
                     f"RobloxConnections.{connection_uuid}.RefreshToken": tokens[
                         "refresh_token"
                     ],
-                    f"RobloxConnections.{connection_uuid}.ExpiresAt": int(now)+tokens["expires_in"] - 60
+                    f"RobloxConnections.{connection_uuid}.ExpiresAt": int(now)
+                    + tokens["expires_in"]
+                    - 60,
                 }
             }
         )

@@ -1,4 +1,4 @@
-""" A file for handling game servers and their data """
+"""A file for handling game servers and their data"""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ ServerCollection = BotDatabase[CONFIG.SERVER_COLLECTION_NAME]
 
 
 class ServerHandler:
-    """ Manages all roblox game servers """
+    """Manages all roblox game servers"""
 
     bot: Bot
     servers: dict[str, WrappedServer]
@@ -50,7 +50,7 @@ class ServerHandler:
 
     # server data
     async def on_server_created(self, server: GameServer):
-        """ Creates an entry in the server database given server data, returns it. Won't make a new one if it already exists. """
+        """Creates an entry in the server database given server data, returns it. Won't make a new one if it already exists."""
         if server.JobId in self.servers:
             wserver = self.servers[server.JobId]
             await wserver.initialized_event.wait()
@@ -68,24 +68,19 @@ class ServerHandler:
 
     async def on_server_closing(self, server: GameServer):
         """Remotes a server from the database and closes the thread when the server shuts down"""
-        pass
 
     # message types
     async def on_operation(self, operation: Operation):
         """Runs when a game server requests an operation"""
-        pass
 
     async def on_server_message(self, message: ServerMessage):
         """Runs when the game server requests sending a system message"""
-        pass
 
     async def on_user_command(self, command: UserCommand):
         """Runs when a roblox user runs a command"""
-        pass
 
     async def on_user_message(self, message: UserMessage):
         """Runs when a roblox user sends a message in the ingame chat"""
-        pass
 
     async def get_wrapped_server(self, server: GameServer):
         """Returns a WrappedServer given server data, making a new entry if it doesn't exist"""

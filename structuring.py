@@ -1,20 +1,22 @@
 """Everything in here is pretty much useless, just did this for peace of mind"""
 
-from typing import Literal, TypedDict, Any
+from typing import Literal
 
-import discord
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
-from datamodels import RobloxUser, DiscordUser
+from datamodels import DiscordUser, RobloxUser
 
 # inbound stuffs
 
+
 class InboundMessage(BaseModel):
-    Type: Literal["UserMessage","UserCommand","ServerMessage"]
+    Type: Literal["UserMessage", "UserCommand", "ServerMessage"]
+
 
 class InboundUserMessage(InboundMessage):
     User: RobloxUser
     Message: str
+
 
 class InboundUserCommand(InboundMessage):
     User: RobloxUser
@@ -22,8 +24,10 @@ class InboundUserCommand(InboundMessage):
     Body: str
     CommandUUID: str | None
 
+
 class InboundServerMessage(InboundMessage):
     Body: str
+
 
 class InboundPollBuffer(BaseModel):
     Buffers: dict[int, InboundUserCommand | InboundUserMessage | InboundServerMessage]
@@ -31,10 +35,12 @@ class InboundPollBuffer(BaseModel):
     CurrentId: int
 
 
-#outbound stuffs
+# outbound stuffs
+
 
 class OutboundMessage(BaseModel):
-    Type: Literal["UserMessage","UserCommand"]
+    Type: Literal["UserMessage", "UserCommand"]
+
 
 class OutboundUserMessage(OutboundMessage):
     User: DiscordUser
@@ -48,6 +54,6 @@ class OutboundUserCommand(BaseModel):
 
 
 class OutboundPollBuffer(BaseModel):
-    Buffers: dict[int,list[OutboundUserCommand,OutboundUserMessage]]
+    Buffers: dict[int, list[OutboundUserCommand | OutboundUserMessage]]
     RequestedBuffers: list[int]
     CurrentId: int

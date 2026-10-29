@@ -1,4 +1,4 @@
-""" File holding the WrappedGuild class """
+"""File holding the WrappedGuild class"""
 
 from __future__ import annotations
 
@@ -38,17 +38,17 @@ class WrappedGuild:
         self.guild_handler = bot.guild_handler
 
     def apply_data(self, data: GuildData):
-        """ Sets the WrappedGuild's data and sets the initialized event """
+        """Sets the WrappedGuild's data and sets the initialized event"""
 
         self.data = data
         self.initialized_event.set()
 
     async def update(self, update: dict[str, Any]):
-        """ A wrapper to guild_handler.update(), runs a mongo query and updates the cached data too """
+        """A wrapper to guild_handler.update(), runs a mongo query and updates the cached data too"""
         return await self.guild_handler.proper_update_guild_data(self, update)
 
     async def get_access_token(self, connection_uuid: str):
-        """ Gets the most recent access token, fetching a new one if it's expired """
+        """Gets the most recent access token, fetching a new one if it's expired"""
         roblox_connections = self.data["RobloxConnections"]
         if connection_uuid not in roblox_connections:
             raise KeyError(f"Unknown connection UUID {connection_uuid}")
@@ -65,7 +65,7 @@ class WrappedGuild:
         return connection["AccessToken"]
 
     async def try_add_connection(self, user_id: int, params: OauthCallbackParams):
-        """ Attempts to add a RobloxConnection given an oauth callback """
+        """Attempts to add a RobloxConnection given an oauth callback"""
         member: discord.Member | None = self.guild.get_member(user_id)
         if member is None:
             try:
