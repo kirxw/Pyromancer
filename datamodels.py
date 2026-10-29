@@ -106,6 +106,17 @@ class DiscordUser(BaseModel):
     DisplayName: str
 
 
+class InboundRequestHeaders(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    AuthToken: str
+    PlaceId: int
+    JobId: str
+    StartupTime: int
+    ServerType: str
+    TIMESTAMP: int
+
+
 class RobloxConnection(TypedDict):
     """An oauth connection to a roblox account"""
 
