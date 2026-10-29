@@ -15,11 +15,17 @@ class WrappedServer:
     bot: Bot
     server: GameServer
     initialized_event: asyncio.Event
-    thread = discord.Thread
+    thread: discord.Thread
 
     def __init__(self, bot: Bot, server: GameServer):
         self.bot = bot
         self.server = server
+
+        place_data = self.bot.server_handler.place_cache[server.PlaceId]
+        assert place_data["SharedSecret"] == server.SharedSecret, (
+            "Incorrect secret passed."
+        )
+        self.place_data = place_data
 
     def apply_thread(self, thread: discord.Thread):
         self.thread = thread
