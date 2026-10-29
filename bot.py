@@ -14,10 +14,7 @@ from modules.server_handler import ServerHandler
 
 
 class Bot(commands.Bot):
-    on_user_message: Event
     on_server_message: Event
-    on_user_command: Event
-    on_operation: Event
     on_server_created: Event
     on_server_closing: Event
     guild_handler: GuildHandler
@@ -33,10 +30,7 @@ class Bot(commands.Bot):
             ),
         )
 
-        self.on_operation = Event()
         self.on_server_message = Event()
-        self.on_user_command = Event()
-        self.on_user_message = Event()
         self.on_server_created = Event()
         self.on_server_closing = Event()
         self.ON_SETUP_FINISHED = (
