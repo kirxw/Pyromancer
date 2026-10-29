@@ -10,12 +10,9 @@ from classes.wrappedserver import WrappedServer
 from config import CONFIG
 from datamodels import (
     GameServer,
-    Operation,
     ServerData,
-    ServerMessage,
-    UserCommand,
-    UserMessage,
 )
+from structuring import InboundMessage
 
 if TYPE_CHECKING:
     from bot import Bot
@@ -42,11 +39,7 @@ class ServerHandler:
 
         bot.on_server_created.bind(self.on_server_created)
         bot.on_server_closing.bind(self.on_server_closing)
-
-        bot.on_user_command.bind(self.on_user_command)
-        bot.on_user_message.bind(self.on_user_message)
         bot.on_server_message.bind(self.on_server_message)
-        bot.on_operation.bind(self.on_operation)
 
     # server data
     async def on_server_created(self, server: GameServer):
@@ -59,29 +52,16 @@ class ServerHandler:
         wserver = WrappedServer(bot=self.bot, server=server)
         self.servers[server.JobId] = wserver
 
-        # server_data: ServerData | None = await ServerCollection.find_one(
-        #     {"_id": server.JobId}
-        # )
+        server_data: ServerData | None = await ServerCollection.find_one(
+            {"_id": server.JobId}
+        )
 
         # wserver.apply_thread()
         return wserver
 
     async def on_server_closing(self, server: GameServer):
-        """Remotes a server from the database and closes the thread when the server shuts down"""
+        """Removes a server from the database and closes the thread when the server shuts down"""
 
-    # message types
-    async def on_operation(self, operation: Operation):
-        """Runs when a game server requests an operation"""
-
-    async def on_server_message(self, message: ServerMessage):
-        """Runs when the game server requests sending a system message"""
-
-    async def on_user_command(self, command: UserCommand):
-        """Runs when a roblox user runs a command"""
-
-    async def on_user_message(self, message: UserMessage):
-        """Runs when a roblox user sends a message in the ingame chat"""
-
-    async def get_wrapped_server(self, server: GameServer):
-        """Returns a WrappedServer given server data, making a new entry if it doesn't exist"""
-        return await self.on_server_created(server)
+    async def on_server_message(self, server: GameServer, message: InboundMessage):
+        """When a roblox server sends a message"""
+        wserver: WrappedServer = await self.on_server_created(server)
